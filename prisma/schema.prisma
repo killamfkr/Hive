@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum MembershipTier {
+  FREE
+  PAID
+}
+
+model User {
+  id                       String         @id @default(cuid())
+  email                    String         @unique
+  passwordHash             String
+  name                     String?
+  membershipTier           MembershipTier @default(FREE)
+  stripeCustomerId         String?
+  stripeSubscriptionId     String?
+  stripeSubscriptionStatus String?
+  xuiLineId                String?
+  xuiUsername              String?
+  xuiPassword              String?
+  xuiExpiresAt             DateTime?
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
+  threads                  Thread[]
+  posts                    Post[]
+}
+
+model Category {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  description  String?
+  sortOrder    Int      @default(0)
+  requiresPaid Boolean  @default(false)
+  threads      Thread[]
+}
+
+model Thread {
+  id         String   @id @default(cuid())
+  title      String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  posts      Post[]
+
+  @@index([categoryId])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  content   String
+  threadId  String
+  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([threadId])
+}
+
+model ProcessedStripeEvent {
+  id        String   @id
+  createdAt DateTime @default(now())
+}
