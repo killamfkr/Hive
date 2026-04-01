@@ -10,13 +10,13 @@
   <Support>https://github.com/killamfkr/Hive/issues</Support>
   <Project>https://github.com/killamfkr/Hive</Project>
   <Overview>
-    **Hive Tech Forum** — Next.js forum for tech, servers, and IPTV with free and Pro (Stripe) tiers.&#xD;
+    Hive Tech Forum — Next.js forum for tech, servers, and IPTV; free tier and Pro (Stripe).&#xD;
     &#xD;
-    Pre-built image from GitHub Container Registry. On first start the container runs database migrations; seed categories once: `docker exec -it Hive-Tech-Forum sh -c 'cd /app &amp;&amp; npx prisma db seed'`.&#xD;
+    Image: ghcr.io/killamfkr/hive:latest. Migrations run on container start. Seed categories once (terminal): docker exec -it Hive-Tech-Forum sh -c 'cd /app &amp;&amp; npx prisma db seed'&#xD;
     &#xD;
-    Set **NEXTAUTH_URL** to your real public URL (https if using a reverse proxy). Point Stripe webhooks to `https://your-domain/api/webhooks/stripe`.&#xD;
+    Set NEXTAUTH_URL to your real public URL (https behind Swag/NPM). Stripe webhook path: /api/webhooks/stripe&#xD;
     &#xD;
-    If `docker pull` fails with unauthorized, make the GHCR package public or use **Registry** credentials under Docker (for private images).
+    If pull fails with unauthorized, set the GHCR package to public or configure registry login on Unraid.
   </Overview>
   <Category>Cloud: Productivity</Category>
   <WebUI>http://[IP]:[PORT:3000]/</WebUI>
