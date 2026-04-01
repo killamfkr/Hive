@@ -1,0 +1,20 @@
+# Example for Linux / Unraid (adjust paths and env)
+services:
+  forum:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      # Use your server URL (https if behind reverse proxy)
+      AUTH_SECRET: "change-me-openssl-rand-base64-32"
+      NEXTAUTH_URL: "http://YOUR_UNRAID_IP:3000"
+      DATABASE_URL: "file:/data/forum.db"
+      # Stripe / XUI — see .env.example
+      STRIPE_SECRET_KEY: ""
+      STRIPE_WEBHOOK_SECRET: ""
+      STRIPE_PRICE_ID_PAID: ""
+      XUI_BASE_URL: ""
+      XUI_API_KEY: ""
+      XUI_BOUQUET_IDS: "1"
+    volumes:
+      - /mnt/user/appdata/streamlab-forum:/data
