@@ -1,14 +1,23 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
-      <p className="text-sm font-medium uppercase tracking-widest text-emerald-400">
-        Tech · Servers · IPTV
-      </p>
-      <h1 className="mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-        A forum built for builders and operators
-      </h1>
+      <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+        <BrandLogo showWordmark={false} className="sm:scale-110" />
+        <div>
+          <p className="text-sm font-medium uppercase tracking-widest text-emerald-400">
+            Tech · Servers · IPTV
+          </p>
+          <h1 className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            Hive Tech Forum
+          </h1>
+        </div>
+      </div>
+      <h2 className="mt-8 text-xl font-semibold text-zinc-200 sm:text-2xl">
+        Built for builders and operators
+      </h2>
       <p className="mt-6 text-lg leading-relaxed text-zinc-400">
         Join free to read and post in public boards. Upgrade to Pro for a dedicated IPTV-pro area
         and an XUI line tied to your monthly subscription — created on signup and extended on each

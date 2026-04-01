@@ -1,4 +1,4 @@
-# StreamLab Forum
+# Hive Tech Forum
 
 A Next.js forum focused on **technology**, **servers**, and **IPTV**, with **free** and **paid (Pro)** memberships.
 
@@ -27,21 +27,21 @@ The repo includes a **production Dockerfile** (Next.js `standalone` + `prisma mi
 On your PC or on the server (Community Applications **Docker** tab → terminal, or SSH):
 
 ```bash
-git clone <your-repo-url> streamlab-forum
-cd streamlab-forum
-docker build -t streamlab-forum:latest .
+git clone <your-repo-url> hive-tech-forum
+cd hive-tech-forum
+docker build -t hive-tech-forum:latest .
 ```
 
 ### 2. Create appdata for the database
 
 On Unraid, create a folder that will hold the SQLite file, for example:
 
-`/mnt/user/appdata/streamlab-forum`
+`/mnt/user/appdata/hive-tech-forum`
 
 The container runs as user **nextjs (UID 1001)**. If migrations fail with a permission error, allow that UID to write the folder:
 
 ```bash
-chown -R 1001:1001 /mnt/user/appdata/streamlab-forum
+chown -R 1001:1001 /mnt/user/appdata/hive-tech-forum
 ```
 
 ### 3. Run the container
@@ -49,9 +49,9 @@ chown -R 1001:1001 /mnt/user/appdata/streamlab-forum
 **Docker run** (adjust IP, secrets, and paths):
 
 ```bash
-docker run -d --name streamlab-forum --restart unless-stopped \
+docker run -d --name hive-tech-forum --restart unless-stopped \
   -p 3000:3000 \
-  -v /mnt/user/appdata/streamlab-forum:/data \
+  -v /mnt/user/appdata/hive-tech-forum:/data \
   -e DATABASE_URL="file:/data/forum.db" \
   -e AUTH_SECRET="paste-output-of-openssl-rand-base64-32" \
   -e NEXTAUTH_URL="https://forum.yourdomain.com" \
@@ -61,7 +61,7 @@ docker run -d --name streamlab-forum --restart unless-stopped \
   -e XUI_BASE_URL="https://panel:9000/accesscode" \
   -e XUI_API_KEY="..." \
   -e XUI_BOUQUET_IDS="1" \
-  streamlab-forum:latest
+  hive-tech-forum:latest
 ```
 
 - **`NEXTAUTH_URL`** must match how users open the site (e.g. `https://forum.example.com` if you use Swag / Nginx Proxy Manager).
@@ -76,7 +76,7 @@ Put the app behind **Swag**, **Nginx Proxy Manager**, or Cloudflare Tunnel: prox
 Categories are created by the seed script. Inside the running container:
 
 ```bash
-docker exec -it streamlab-forum sh -c 'cd /app && npx prisma db seed'
+docker exec -it hive-tech-forum sh -c 'cd /app && npx prisma db seed'
 ```
 
 (`npx` may download Prisma briefly unless you add a seed step to the image later.)

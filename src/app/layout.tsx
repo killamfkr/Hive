@@ -14,9 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StreamLab Forum — Tech, servers & IPTV",
+  title: {
+    default: "Hive Tech Forum",
+    template: "%s · Hive Tech Forum",
+  },
   description:
-    "Community forum for technology, server infrastructure, and IPTV discussion. Free and Pro memberships.",
+    "Hive Tech Forum — community for technology, servers, and IPTV. Free and Pro memberships.",
 };
 
 export default function RootLayout({

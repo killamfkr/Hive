@@ -2,6 +2,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { SignOutButton } from "@/components/sign-out-link";
+import { BrandLogo } from "@/components/brand-logo";
 
 export async function Nav() {
   const session = await auth();
@@ -17,8 +18,8 @@ export async function Nav() {
   return (
     <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className="font-semibold tracking-tight text-emerald-400">
-          StreamLab Forum
+        <Link href="/" className="rounded-md outline-offset-4 hover:opacity-90 focus-visible:outline focus-visible:outline-emerald-500">
+          <BrandLogo />
         </Link>
         <nav className="flex flex-wrap items-center gap-4 text-sm text-zinc-300">
           <Link href="/forum" className="hover:text-white">

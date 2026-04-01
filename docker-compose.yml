@@ -17,4 +17,4 @@ services:
       XUI_API_KEY: ""
       XUI_BOUQUET_IDS: "1"
     volumes:
-      - /mnt/user/appdata/streamlab-forum:/data
+      - /mnt/user/appdata/hive-tech-forum:/data
