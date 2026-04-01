@@ -1,15 +1,15 @@
-# Example for Linux / Unraid (adjust paths and env)
+# Pull pre-built image from GitHub Container Registry (no local build):
+#   docker compose pull && docker compose up -d
+# Image is published on each push to main — see .github/workflows/docker-publish.yml
 services:
   forum:
-    build: .
+    image: ghcr.io/killamfkr/hive:latest
     ports:
       - "3000:3000"
     environment:
-      # Use your server URL (https if behind reverse proxy)
       AUTH_SECRET: "change-me-openssl-rand-base64-32"
       NEXTAUTH_URL: "http://YOUR_UNRAID_IP:3000"
       DATABASE_URL: "file:/data/forum.db"
-      # Stripe / XUI — see .env.example
       STRIPE_SECRET_KEY: ""
       STRIPE_WEBHOOK_SECRET: ""
       STRIPE_PRICE_ID_PAID: ""

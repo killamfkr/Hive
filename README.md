@@ -22,17 +22,31 @@ Open [http://localhost:3000](http://localhost:3000).
 
 The repo includes a **production Dockerfile** (Next.js `standalone` + `prisma migrate deploy` on each start).
 
-### 1. Build the image on Unraid
+### Pre-built image (GitHub Container Registry)
 
-On your PC or on the server (Community Applications **Docker** tab → terminal, or SSH):
+On each push to **`main`**, [GitHub Actions](.github/workflows/docker-publish.yml) builds and pushes:
+
+`ghcr.io/killamfkr/hive:latest`
+
+**Pull and run** (no clone or build):
 
 ```bash
-git clone <your-repo-url> hive-tech-forum
+docker pull ghcr.io/killamfkr/hive:latest
+```
+
+If you see **“denied”** or **“unauthorized”**, the package may still be **private**. Open [github.com/killamfkr?tab=packages](https://github.com/killamfkr?tab=packages) → **hive** → **Package settings** → **Change package visibility** → **Public** (or sign in with `docker login ghcr.io` using a GitHub PAT with `read:packages`).
+
+Use the same image name in Unraid’s Docker UI, or use `docker-compose.yml` in this repo (`docker compose pull && docker compose up -d`).
+
+### Build locally (optional)
+
+```bash
+git clone https://github.com/killamfkr/Hive.git hive-tech-forum
 cd hive-tech-forum
 docker build -t hive-tech-forum:latest .
 ```
 
-### 2. Create appdata for the database
+### 1. Create appdata for the database
 
 On Unraid, create a folder that will hold the SQLite file, for example:
 
@@ -44,9 +58,9 @@ The container runs as user **nextjs (UID 1001)**. If migrations fail with a perm
 chown -R 1001:1001 /mnt/user/appdata/hive-tech-forum
 ```
 
-### 3. Run the container
+### 2. Run the container
 
-**Docker run** (adjust IP, secrets, and paths):
+**Docker run** with the **pre-built** image (adjust secrets and paths):
 
 ```bash
 docker run -d --name hive-tech-forum --restart unless-stopped \
@@ -61,17 +75,19 @@ docker run -d --name hive-tech-forum --restart unless-stopped \
   -e XUI_BASE_URL="https://panel:9000/accesscode" \
   -e XUI_API_KEY="..." \
   -e XUI_BOUQUET_IDS="1" \
-  hive-tech-forum:latest
+  ghcr.io/killamfkr/hive:latest
 ```
+
+To use a **locally built** image instead, replace the last line with `hive-tech-forum:latest`.
 
 - **`NEXTAUTH_URL`** must match how users open the site (e.g. `https://forum.example.com` if you use Swag / Nginx Proxy Manager).
 - **Stripe webhooks** must reach your public URL: `https://forum.example.com/api/webhooks/stripe`.
 
-### 4. Reverse proxy (recommended)
+### 3. Reverse proxy (recommended)
 
 Put the app behind **Swag**, **Nginx Proxy Manager**, or Cloudflare Tunnel: proxy to `http://UNRAID_IP:3000` (or the container’s Docker network address). Use HTTPS so cookies and Stripe callbacks behave correctly.
 
-### 5. Seed forum categories (first deploy only)
+### 4. Seed forum categories (first deploy only)
 
 Categories are created by the seed script. Inside the running container:
 
