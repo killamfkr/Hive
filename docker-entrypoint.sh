@@ -10,6 +10,7 @@ fi
 mkdir -p /data 2>/dev/null || true
 
 echo "Running database migrations..."
-./node_modules/.bin/prisma migrate deploy
+# Next.js standalone output does not ship node_modules/.bin; invoke Prisma CLI entrypoint directly
+node node_modules/prisma/build/index.js migrate deploy
 
 exec node server.js
