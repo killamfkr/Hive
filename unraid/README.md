@@ -1,14 +1,14 @@
 # Unraid Docker template
 
-This folder contains a **Community Applications–style** Docker template for **Hive Tech Forum**.
+Community Applications–style Docker template for **Hive Tech Forum**.
 
 ## Files
 
 | File | Purpose |
 |------|---------|
-| [`hive-tech-forum.xml`](hive-tech-forum.xml) | Container definition (ports, paths, env vars) |
+| [`hive-tech-forum.xml`](hive-tech-forum.xml) | Unraid **Add Container** definition |
 
-**Stable raw URL** (for import or CA `TemplateURL`):
+**Raw URL** (bookmark or download):
 
 `https://raw.githubusercontent.com/killamfkr/Hive/main/unraid/hive-tech-forum.xml`
 
@@ -16,29 +16,44 @@ This folder contains a **Community Applications–style** Docker template for **
 
 ### Option A — Copy to flash drive
 
-1. Download [`hive-tech-forum.xml`](https://raw.githubusercontent.com/killamfkr/Hive/main/unraid/hive-tech-forum.xml).
-2. Place it on your Unraid flash drive under:
-   - `/boot/config/plugins/dockerMan/templates-user/`
-3. **Docker** → **Add Container** → select **Hive-Tech-Forum** from the template list.
+1. Download the [raw `hive-tech-forum.xml`](https://raw.githubusercontent.com/killamfkr/Hive/main/unraid/hive-tech-forum.xml).
+2. Save to: `/boot/config/plugins/dockerMan/templates-user/`
+3. **Docker** → **Add Container** → select **Hive-Tech-Forum**.
 
-### Option B — Import from URL (if your Unraid version supports it)
+### Option B — Import from URL
 
-On the **Add Container** screen, use **Import** / **Template from URL** (wording varies by version) and paste the **raw GitHub URL** above.
+On **Add Container**, use **Import** / **Template from URL** (wording varies) and paste the raw GitHub URL above.
 
 ### Option C — Authoring mode
 
-**Settings → Docker → Enable Docker authoring mode**, then add a custom template repository that includes this XML, or paste the XML in **Advanced view** when adding a container.
+**Settings → Docker → Enable Docker authoring mode**, then add a template repo or paste the XML in **Advanced view**.
 
-## After deploy
+## Container won’t start (restart loop)
 
-1. Create appdata if needed and ensure **UID 1001** can write it:  
-   `chown -R 1001:1001 /mnt/user/appdata/hive-tech-forum`
-2. Set **NEXTAUTH_URL** to your real URL (HTTPS behind **Swag** / **Nginx Proxy Manager**).
-3. Seed forum categories once:
-   ```bash
-   docker exec -it Hive-Tech-Forum sh -c 'cd /app && npx prisma db seed'
-   ```
+1. Open **Docker** → container → **Logs**. Typical causes:
+   - **`AUTH_SECRET`** missing — use `openssl rand -base64 32`.
+   - **No `/data` path** — host folder must map to container **`/data`** (template “Appdata”).
+   - **Permissions** — `chown -R 1001:1001 /mnt/user/appdata/hive-tech-forum`
+   - **`NEXTAUTH_URL`** — must match the URL you use in the browser (`http` vs `https`, host, port).
 
-## Publishing to Community Applications
+2. **Optional fields**: leave Stripe and XUI variables **empty** if unused. Empty strings are OK in current images; avoid stray spaces in URL fields.
 
-To list this app in the public CA store, follow the [Unraid Docker template submission process](https://forums.unraid.net/topic/101424-how-to-publish-docker-templates-to-community-applications-on-unraid/) (maintainer profile, testing, submission form). Until then, use the raw XML URL or copy the file locally as above.
+3. **`docker pull` denied**: make the [GHCR package](https://github.com/killamfkr?tab=packages) public or run `docker login ghcr.io`.
+
+## Settings reset when you click Apply
+
+Including **`<TemplateURL>`** in the XML makes Unraid **re-fetch** the template from GitHub and can **overwrite** your values on apply.
+
+This template **does not** use `TemplateURL`, so your settings persist. Update the app by **pulling a newer image** (`docker pull ghcr.io/killamfkr/hive:latest`) or using Unraid’s container update actions.
+
+## After first start
+
+```bash
+docker exec -it Hive-Tech-Forum sh -c 'cd /app && npx prisma db seed'
+```
+
+Set **NEXTAUTH_URL** to your real public URL if you use **Swag** / **Nginx Proxy Manager**.
+
+## Community Applications (public store)
+
+To publish in the official CA feed, follow the [Unraid template submission process](https://forums.unraid.net/topic/101424-how-to-publish-docker-templates-to-community-applications-on-unraid/). This XML works as a **user template** without that step.

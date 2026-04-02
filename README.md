@@ -101,13 +101,13 @@ docker exec -it hive-tech-forum sh -c 'cd /app && npx prisma db seed'
 
 See `docker-compose.yml` for a template (edit paths and environment variables).
 
-### Unraid template (Community Applications style)
+### Unraid template
 
-An XML template for the Unraid Docker UI lives in [`unraid/`](unraid/README.md). Import the raw file:
+XML template: [`unraid/hive-tech-forum.xml`](unraid/hive-tech-forum.xml). Copy to `/boot/config/plugins/dockerMan/templates-user/` or use the [raw URL](https://raw.githubusercontent.com/killamfkr/Hive/main/unraid/hive-tech-forum.xml).
 
-`https://raw.githubusercontent.com/killamfkr/Hive/main/unraid/hive-tech-forum.xml`
+The template **does not include `TemplateURL`**, so Unraid should **not** reset your fields when you click **Apply**. Refresh the image with **`docker pull ghcr.io/killamfkr/hive:latest`** (or Unraid’s update) after we publish fixes.
 
-or copy `unraid/hive-tech-forum.xml` to `/boot/config/plugins/dockerMan/templates-user/` on your Unraid flash drive.
+If the container **restarts in a loop**, open **Logs** and read [`unraid/README.md`](unraid/README.md).
 
 ## Environment variables
 

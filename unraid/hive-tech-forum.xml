@@ -12,17 +12,24 @@
   <Overview>
     Hive Tech Forum — Next.js forum for tech, servers, and IPTV; free tier and Pro (Stripe).&#xD;
     &#xD;
-    Image: ghcr.io/killamfkr/hive:latest. Migrations run on container start. Seed categories once (terminal): docker exec -it Hive-Tech-Forum sh -c 'cd /app &amp;&amp; npx prisma db seed'&#xD;
+    Image: ghcr.io/killamfkr/hive:latest. Migrations run on container start.&#xD;
     &#xD;
-    Set NEXTAUTH_URL to your real public URL (https behind Swag/NPM). Stripe webhook path: /api/webhooks/stripe&#xD;
+    REQUIRED: set AUTH_SECRET (openssl rand -base64 32) and NEXTAUTH_URL to your real URL (https behind a reverse proxy).&#xD;
     &#xD;
-    If pull fails with unauthorized, set the GHCR package to public or configure registry login on Unraid.
+    REQUIRED: map Host Path to Container Path /data (appdata). Example: /mnt/user/appdata/hive-tech-forum  -&gt;  /data&#xD;
+    If the container restarts in a loop, check Docker logs. Common fixes: chown 1001:1001 on appdata, fix NEXTAUTH_URL, leave optional Stripe/XUI fields blank (not a single space).&#xD;
+    &#xD;
+    If docker pull fails with unauthorized, set the GHCR package to public or configure registry login on Unraid.&#xD;
+    &#xD;
+    Seed categories once: docker exec -it Hive-Tech-Forum sh -c 'cd /app &amp;&amp; npx prisma db seed'&#xD;
+    Stripe webhook: https://your-domain/api/webhooks/stripe&#xD;
+    &#xD;
+    Note: This template intentionally has NO TemplateURL so Unraid does not overwrite your settings when you click Apply. Update the image with Docker pull or recreate the container when the image is updated.
   </Overview>
   <Category>Cloud: Productivity</Category>
   <WebUI>http://[IP]:[PORT:3000]/</WebUI>
-  <TemplateURL>https://raw.githubusercontent.com/killamfkr/Hive/main/unraid/hive-tech-forum.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/killamfkr/Hive/main/public/logo.svg</Icon>
-  <ExtraParams>--pull always</ExtraParams>
+  <ExtraParams/>
   <PostArguments/>
   <CPUset/>
   <DateInstalled/>
@@ -30,16 +37,16 @@
   <DonateLink/>
   <Requires/>
   <Config Name="Web UI port" Target="3000" Default="3000" Mode="tcp" Description="HTTP port for the forum" Type="Port" Display="always" Required="true" Mask="false">3000</Config>
-  <Config Name="Appdata" Target="/data" Default="/mnt/user/appdata/hive-tech-forum" Mode="rw" Description="SQLite database (forum.db) and persistent files. chown 1001:1001 if permission errors." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hive-tech-forum</Config>
-  <Config Name="DATABASE_URL" Target="DATABASE_URL" Default="file:/data/forum.db" Mode="" Description="SQLite path inside container; keep default when using /data mount." Type="Variable" Display="advanced-hide" Required="true" Mask="false">file:/data/forum.db</Config>
-  <Config Name="AUTH_SECRET" Target="AUTH_SECRET" Default="" Mode="" Description="Random secret: openssl rand -base64 32" Type="Variable" Display="always" Required="true" Mask="true"/>
-  <Config Name="NEXTAUTH_URL" Target="NEXTAUTH_URL" Default="http://tower:3000" Mode="" Description="Public site URL users visit (https://forum.example.com behind proxy)" Type="Variable" Display="always" Required="true" Mask="false">http://tower:3000</Config>
-  <Config Name="STRIPE_SECRET_KEY" Target="STRIPE_SECRET_KEY" Default="" Mode="" Description="Stripe secret key (optional if not using Pro billing)" Type="Variable" Display="always" Required="false" Mask="true"/>
-  <Config Name="STRIPE_WEBHOOK_SECRET" Target="STRIPE_WEBHOOK_SECRET" Default="" Mode="" Description="Stripe webhook signing secret" Type="Variable" Display="always" Required="false" Mask="true"/>
-  <Config Name="STRIPE_PRICE_ID_PAID" Target="STRIPE_PRICE_ID_PAID" Default="" Mode="" Description="Stripe Price ID for monthly Pro subscription" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="XUI_BASE_URL" Target="XUI_BASE_URL" Default="" Mode="" Description="XUI Admin API base URL ending in /accesscode" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="XUI_API_KEY" Target="XUI_API_KEY" Default="" Mode="" Description="XUI Admin API key" Type="Variable" Display="always" Required="false" Mask="true"/>
-  <Config Name="XUI_BOUQUET_IDS" Target="XUI_BOUQUET_IDS" Default="1" Mode="" Description="Comma-separated bouquet IDs for new lines" Type="Variable" Display="always" Required="false" Mask="false">1</Config>
+  <Config Name="Appdata" Target="/data" Default="/mnt/user/appdata/hive-tech-forum" Mode="rw" Description="REQUIRED. SQLite database lives here (forum.db). chown -R 1001:1001 this folder if migrations fail." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hive-tech-forum</Config>
+  <Config Name="DATABASE_URL" Target="DATABASE_URL" Default="file:/data/forum.db" Mode="" Description="Leave default when using the Appdata mapping above." Type="Variable" Display="advanced-hide" Required="true" Mask="false">file:/data/forum.db</Config>
+  <Config Name="AUTH_SECRET" Target="AUTH_SECRET" Default="" Mode="" Description="Required. Generate: openssl rand -base64 32" Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="NEXTAUTH_URL" Target="NEXTAUTH_URL" Default="http://REPLACE_WITH_YOUR_SERVER_IP:3000" Mode="" Description="Must match the URL users use in the browser (use https://your.domain if behind Swag/NPM)." Type="Variable" Display="always" Required="true" Mask="false">http://REPLACE_WITH_YOUR_SERVER_IP:3000</Config>
+  <Config Name="STRIPE_SECRET_KEY" Target="STRIPE_SECRET_KEY" Default="" Mode="" Description="Optional. Leave completely empty if not using Stripe." Type="Variable" Display="always" Required="false" Mask="true"/>
+  <Config Name="STRIPE_WEBHOOK_SECRET" Target="STRIPE_WEBHOOK_SECRET" Default="" Mode="" Description="Optional. Leave empty if not using Stripe." Type="Variable" Display="always" Required="false" Mask="true"/>
+  <Config Name="STRIPE_PRICE_ID_PAID" Target="STRIPE_PRICE_ID_PAID" Default="" Mode="" Description="Optional. Leave empty if not using Stripe." Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="XUI_BASE_URL" Target="XUI_BASE_URL" Default="" Mode="" Description="Optional. Full URL ending in /accesscode, or leave empty." Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="XUI_API_KEY" Target="XUI_API_KEY" Default="" Mode="" Description="Optional. Leave empty if not using XUI." Type="Variable" Display="always" Required="false" Mask="true"/>
+  <Config Name="XUI_BOUQUET_IDS" Target="XUI_BOUQUET_IDS" Default="1" Mode="" Description="Comma-separated bouquet IDs for new XUI lines" Type="Variable" Display="always" Required="false" Mask="false">1</Config>
   <Config Name="XUI_MAX_CONNECTIONS" Target="XUI_MAX_CONNECTIONS" Default="1" Mode="" Description="Max concurrent connections per XUI line" Type="Variable" Display="advanced" Required="false" Mask="false">1</Config>
-  <Config Name="XUI_SUBSCRIPTION_LENGTH" Target="XUI_SUBSCRIPTION_LENGTH" Default="30" Mode="" Description="Days for XUI exp_date (numeric = N days)" Type="Variable" Display="advanced" Required="false" Mask="false">30</Config>
+  <Config Name="XUI_SUBSCRIPTION_LENGTH" Target="XUI_SUBSCRIPTION_LENGTH" Default="30" Mode="" Description="Days for XUI line extension (numeric)" Type="Variable" Display="advanced" Required="false" Mask="false">30</Config>
 </Container>
