@@ -92,7 +92,7 @@ Put the app behind **Swag**, **Nginx Proxy Manager**, or Cloudflare Tunnel: prox
 Categories are created by the seed script. Inside the running container:
 
 ```bash
-docker exec -it hive-tech-forum sh -c 'cd /app && npx prisma db seed'
+docker exec -it hive-tech-forum sh -c 'cd /app/prisma-migrate && node node_modules/prisma/build/index.js db seed'
 ```
 
 (`npx` may download Prisma briefly unless you add a seed step to the image later.)

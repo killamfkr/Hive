@@ -10,7 +10,7 @@ fi
 mkdir -p /data 2>/dev/null || true
 
 echo "Running database migrations..."
-# Next.js standalone output does not ship node_modules/.bin; invoke Prisma CLI entrypoint directly
-node node_modules/prisma/build/index.js migrate deploy
+# Dedicated prisma-migrate install in image (full deps: effect, c12, …); standalone bundle omits them
+node prisma-migrate/node_modules/prisma/build/index.js migrate deploy
 
 exec node server.js

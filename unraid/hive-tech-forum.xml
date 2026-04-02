@@ -22,7 +22,7 @@
     &#xD;
     If docker pull fails with unauthorized, set the GHCR package to public or configure registry login on Unraid.&#xD;
     &#xD;
-    Seed categories once: docker exec -it Hive-Tech-Forum sh -c 'cd /app &amp;&amp; npx prisma db seed'&#xD;
+    Seed categories once: docker exec -it Hive-Tech-Forum sh -c 'cd /app/prisma-migrate &amp;&amp; node node_modules/prisma/build/index.js db seed'&#xD;
     Stripe webhook: https://your-domain/api/webhooks/stripe&#xD;
     &#xD;
     Note: This template intentionally has NO TemplateURL so Unraid does not overwrite your settings when you click Apply. Update the image with Docker pull or recreate the container when the image is updated.

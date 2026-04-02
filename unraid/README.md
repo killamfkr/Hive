@@ -63,8 +63,10 @@ This template **does not** use `TemplateURL`, so your settings persist. Update t
 ## After first start
 
 ```bash
-docker exec -it Hive-Tech-Forum sh -c 'cd /app && npx prisma db seed'
+docker exec -it Hive-Tech-Forum sh -c 'cd /app/prisma-migrate && node node_modules/prisma/build/index.js db seed'
 ```
+
+Uses the bundled **prisma-migrate** install (no `npx` / network).
 
 Set **NEXTAUTH_URL** to your real public URL if you use **Swag** / **Nginx Proxy Manager**.
 

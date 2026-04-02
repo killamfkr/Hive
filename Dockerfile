@@ -18,6 +18,16 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
+# Full Prisma CLI dependency tree (effect, c12, …) — Next standalone trace omits these
+FROM base AS prisma-migrate
+WORKDIR /prisma-migrate
+COPY prisma ./prisma/
+RUN printf '%s\n' \
+  '{"name":"prisma-migrate","private":true,"dependencies":{"prisma":"6.19.2","tsx":"4.21.0","@prisma/client":"6.19.2"},"prisma":{"seed":"tsx prisma/seed.ts"}}' \
+  > package.json \
+  && npm install --omit=dev \
+  && DATABASE_URL="file:./.build-generate.db" npx prisma generate --schema=./prisma/schema.prisma
+
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
@@ -33,10 +43,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-# Prisma CLI + engines (migrate deploy at container start)
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=prisma-migrate --chown=nextjs:nodejs /prisma-migrate ./prisma-migrate
 
 COPY --chown=nextjs:nodejs docker-entrypoint.sh ./
 RUN chmod +x docker-entrypoint.sh
