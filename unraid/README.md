@@ -28,9 +28,23 @@ On **Add Container**, use **Import** / **Template from URL** (wording varies) an
 
 **Settings → Docker → Enable Docker authoring mode**, then add a template repo or paste the XML in **Advanced view**.
 
+## No icon / how to open logs
+
+Unraid often **does not show SVG** icons from GitHub; this template uses a **PNG** icon (`public/unraid-icon.png`). After updating the template XML, **edit** the container once and **Apply** so Unraid refreshes the icon URL.
+
+**Logs** (if you do not see a log icon):
+
+- **Docker** tab → scroll the installed containers list → click the **container name** **Hive-Tech-Forum** → choose **Logs** (wording varies slightly by Unraid version).
+- Or **Main / Terminal** (or SSH) and run:  
+  `docker logs Hive-Tech-Forum`  
+  or follow live output:  
+  `docker logs -f --tail 200 Hive-Tech-Forum`
+
+If there is **no row** for the container, it never started — check the error when you clicked **Apply**, or run `docker ps -a | grep -i hive`.
+
 ## Container won’t start (restart loop)
 
-1. Open **Docker** → container → **Logs**. Typical causes:
+1. Open logs (see above). Typical causes:
    - **`AUTH_SECRET`** missing — use `openssl rand -base64 32`.
    - **No `/data` path** — host folder must map to container **`/data`** (template “Appdata”).
    - **Permissions** — `chown -R 1001:1001 /mnt/user/appdata/hive-tech-forum`

@@ -17,7 +17,8 @@
     REQUIRED: set AUTH_SECRET (openssl rand -base64 32) and NEXTAUTH_URL to your real URL (https behind a reverse proxy).&#xD;
     &#xD;
     REQUIRED: map Host Path to Container Path /data (appdata). Example: /mnt/user/appdata/hive-tech-forum  -&gt;  /data&#xD;
-    If the container restarts in a loop, check Docker logs. Common fixes: chown 1001:1001 on appdata, fix NEXTAUTH_URL, leave optional Stripe/XUI fields blank (not a single space).&#xD;
+    If the container restarts in a loop, view logs: Unraid Docker tab → find Hive-Tech-Forum in the list → click the container name (or the log icon if shown) → Logs. Or SSH: docker logs Hive-Tech-Forum  (or docker logs --tail 200 -f Hive-Tech-Forum). If you see no container row, creation failed — read the red error on Apply or run docker ps -a.&#xD;
+    Common fixes: chown 1001:1001 on appdata, fix NEXTAUTH_URL, leave optional Stripe/XUI fields blank (not a single space).&#xD;
     &#xD;
     If docker pull fails with unauthorized, set the GHCR package to public or configure registry login on Unraid.&#xD;
     &#xD;
@@ -28,7 +29,7 @@
   </Overview>
   <Category>Cloud: Productivity</Category>
   <WebUI>http://[IP]:[PORT:3000]/</WebUI>
-  <Icon>https://raw.githubusercontent.com/killamfkr/Hive/main/public/logo.svg</Icon>
+  <Icon>https://raw.githubusercontent.com/killamfkr/Hive/main/public/unraid-icon.png</Icon>
   <ExtraParams/>
   <PostArguments/>
   <CPUset/>
