@@ -109,6 +109,8 @@ The template **does not include `TemplateURL`**, so Unraid should **not** reset 
 
 If the container **restarts in a loop**, open **Logs** (Docker tab → click container name → Logs, or `docker logs Hive-Tech-Forum`). Unraid needs a **PNG** icon URL for the logo to show; the template points at `public/unraid-icon.png`. Details: [`unraid/README.md`](unraid/README.md).
 
+If Unraid shows **Execution error / Server error** when applying the template, that is Unraid’s generic Docker message — use **SSH** and `docker logs …` for the real error; see the top of [`unraid/README.md`](unraid/README.md).
+
 ## Environment variables
 
 See `.env.example` for `DATABASE_URL`, `AUTH_SECRET`, Stripe keys, price ID, webhook secret, and XUI base URL / API key / bouquet IDs.

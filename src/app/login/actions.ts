@@ -1,7 +1,7 @@
 "use server";
 
 import { AuthError } from "next-auth";
-import { redirect } from "next/navigation";
+import { redirect, unstable_rethrow } from "next/navigation";
 import { signIn } from "@/auth";
 
 export async function loginAction(formData: FormData, callbackUrl?: string) {
@@ -16,6 +16,7 @@ export async function loginAction(formData: FormData, callbackUrl?: string) {
       redirectTo: safeCallback,
     });
   } catch (e) {
+    unstable_rethrow(e);
     if (e instanceof AuthError) {
       redirect(
         `/login?error=1${callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//") ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`

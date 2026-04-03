@@ -28,6 +28,20 @@ On **Add Container**, use **Import** / **Template from URL** (wording varies) an
 
 **Settings → Docker → Enable Docker authoring mode**, then add a template repo or paste the XML in **Advanced view**.
 
+## “Execution error” / “Server error” (Unraid Docker UI)
+
+That message is **Unraid’s generic Docker error**, not text from the forum app. It usually means **Apply** failed or the **Web UI / console** could not talk to Docker.
+
+1. **Terminal / SSH** on the server and run:
+   ```bash
+   docker ps -a
+   docker logs Hive-Tech-Forum --tail 100
+   ```
+2. Try **Settings → Docker → turn Docker off, then on** (some users fix 403 / generic errors this way).
+3. If the container never appears, run the same `docker run …` from the main README manually to see the **real** error line.
+
+---
+
 ## No icon / how to open logs
 
 Unraid often **does not show SVG** icons from GitHub; this template uses a **PNG** icon (`public/unraid-icon.png`). After updating the template XML, **edit** the container once and **Apply** so Unraid refreshes the icon URL.

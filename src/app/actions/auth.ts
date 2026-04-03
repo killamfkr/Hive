@@ -1,7 +1,13 @@
 "use server";
 
+import { unstable_rethrow } from "next/navigation";
 import { signOut } from "@/auth";
 
 export async function signOutAction() {
-  await signOut({ redirectTo: "/" });
+  try {
+    await signOut({ redirectTo: "/" });
+  } catch (e) {
+    unstable_rethrow(e);
+    throw e;
+  }
 }
