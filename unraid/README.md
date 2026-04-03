@@ -28,17 +28,47 @@ On **Add Container**, use **Import** / **Template from URL** (wording varies) an
 
 **Settings → Docker → Enable Docker authoring mode**, then add a template repo or paste the XML in **Advanced view**.
 
-## “Execution error” / “Server error” (Unraid Docker UI)
+## “Execution error” when starting (container never runs — no logs)
 
-That message is **Unraid’s generic Docker error**, not text from the forum app. It usually means **Apply** failed or the **Web UI / console** could not talk to Docker.
+Unraid shows **Execution error** when **Docker refuses to create/start** the container. There are **no logs** until a container exists.
 
-1. **Terminal / SSH** on the server and run:
-   ```bash
-   docker ps -a
-   docker logs Hive-Tech-Forum --tail 100
-   ```
-2. Try **Settings → Docker → turn Docker off, then on** (some users fix 403 / generic errors this way).
-3. If the container never appears, run the same `docker run …` from the main README manually to see the **real** error line.
+### 1. Fix the image reference (most common on Unraid + GHCR)
+
+The template uses a **full** image name: `ghcr.io/killamfkr/hive:latest`.
+
+- In **Add / Edit container → Show more settings → Extra Parameters / Registry**, make sure you are **not** setting **Registry** to `ghcr.io` **again** (double-prefix breaks pulls). The stock template **does not** set `<Registry>` for that reason.
+- If you previously saved a bad value, **edit the container**, clear custom registry fields, **Repository** must be exactly:  
+  `ghcr.io/killamfkr/hive:latest`
+
+### 2. Prove the image pulls (SSH on Unraid)
+
+```bash
+docker pull ghcr.io/killamfkr/hive:latest
+```
+
+- **denied / unauthorized** → make the [GitHub package](https://github.com/killamfkr?tab=packages) **Public**, or `docker login ghcr.io` (PAT with `read:packages`).
+- **manifest unknown** → typo in name or image not built yet (check [Actions](https://github.com/killamfkr/Hive/actions)).
+
+### 3. Run once in the foreground (see the real error)
+
+Replace env values and host path:
+
+```bash
+docker run --rm -it \
+  -p 3000:3000 \
+  -v /mnt/user/appdata/hive-tech-forum:/data \
+  -e DATABASE_URL=file:/data/forum.db \
+  -e AUTH_SECRET='paste-a-long-secret' \
+  -e NEXTAUTH_URL='http://YOUR_UNRAID_IP:3000' \
+  ghcr.io/killamfkr/hive:latest
+```
+
+Read the **first lines** printed (migrations, Node stack traces). If migrations are suspect, add **`-e SKIP_DB_MIGRATE=1`** (debug only) in the Unraid template under Advanced, or in this command, to see whether the app **node server.js** starts.
+
+### 4. Other Unraid quirks
+
+- **Settings → Docker**: disable Docker, enable again if the UI always returns generic errors.
+- **Path**: host folder for `/data` must exist; `mkdir -p /mnt/user/appdata/hive-tech-forum` and `chown -R 1001:1001 …` if SQLite errors appear **after** the container finally starts.
 
 ---
 

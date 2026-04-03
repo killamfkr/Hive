@@ -109,7 +109,7 @@ The template **does not include `TemplateURL`**, so Unraid should **not** reset 
 
 If the container **restarts in a loop**, open **Logs** (Docker tab → click container name → Logs, or `docker logs Hive-Tech-Forum`). Unraid needs a **PNG** icon URL for the logo to show; the template points at `public/unraid-icon.png`. Details: [`unraid/README.md`](unraid/README.md).
 
-If Unraid shows **Execution error / Server error** when applying the template, that is Unraid’s generic Docker message — use **SSH** and `docker logs …` for the real error; see the top of [`unraid/README.md`](unraid/README.md).
+If Unraid shows **Execution error** and the container **never starts** (no logs), the failure is usually **before** the app runs — often **GHCR pull** or a **bad Registry + Repository** combo. **SSH**: `docker pull ghcr.io/killamfkr/hive:latest` and see [`unraid/README.md`](unraid/README.md) (foreground `docker run`, `SKIP_DB_MIGRATE`).
 
 ## Environment variables
 

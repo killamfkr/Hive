@@ -9,8 +9,12 @@ fi
 # Ensure /data exists (writable when host-mounted; image includes empty /data fallback)
 mkdir -p /data 2>/dev/null || true
 
-echo "Running database migrations..."
-# Dedicated prisma-migrate install in image (full deps: effect, c12, …); standalone bundle omits them
-node prisma-migrate/node_modules/prisma/build/index.js migrate deploy
+if [ "$SKIP_DB_MIGRATE" = "1" ]; then
+  echo "SKIP_DB_MIGRATE=1 — skipping migrations (debug only)"
+else
+  echo "Running database migrations..."
+  # Dedicated prisma-migrate install in image (full deps: effect, c12, …); standalone bundle omits them
+  node prisma-migrate/node_modules/prisma/build/index.js migrate deploy
+fi
 
 exec node server.js

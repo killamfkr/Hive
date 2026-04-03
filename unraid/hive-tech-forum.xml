@@ -2,7 +2,6 @@
 <Container version="2">
   <Name>Hive-Tech-Forum</Name>
   <Repository>ghcr.io/killamfkr/hive:latest</Repository>
-  <Registry>https://ghcr.io</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>sh</Shell>
@@ -20,7 +19,8 @@
     If the container restarts in a loop, view logs: Unraid Docker tab → find Hive-Tech-Forum in the list → click the container name (or the log icon if shown) → Logs. Or SSH: docker logs Hive-Tech-Forum  (or docker logs --tail 200 -f Hive-Tech-Forum). If you see no container row, creation failed — read the red error on Apply or run docker ps -a.&#xD;
     Common fixes: chown 1001:1001 on appdata, fix NEXTAUTH_URL, leave optional Stripe/XUI fields blank (not a single space).&#xD;
     &#xD;
-    If docker pull fails with unauthorized, set the GHCR package to public or configure registry login on Unraid.&#xD;
+    If Apply shows Execution error and the container never starts: remove any custom Registry in Advanced (template uses full image path only). On SSH run: docker pull ghcr.io/killamfkr/hive:latest  then see unraid/README.md debug section.&#xD;
+    If docker pull fails with unauthorized, set the GHCR package to public or docker login ghcr.io on Unraid.&#xD;
     &#xD;
     Seed categories once: docker exec -it Hive-Tech-Forum sh -c 'cd /app/prisma-migrate &amp;&amp; node node_modules/prisma/build/index.js db seed'&#xD;
     Stripe webhook: https://your-domain/api/webhooks/stripe&#xD;
@@ -40,6 +40,7 @@
   <Config Name="Web UI port" Target="3000" Default="3000" Mode="tcp" Description="HTTP port for the forum" Type="Port" Display="always" Required="true" Mask="false">3000</Config>
   <Config Name="Appdata" Target="/data" Default="/mnt/user/appdata/hive-tech-forum" Mode="rw" Description="REQUIRED. SQLite database lives here (forum.db). chown -R 1001:1001 this folder if migrations fail." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hive-tech-forum</Config>
   <Config Name="DATABASE_URL" Target="DATABASE_URL" Default="file:/data/forum.db" Mode="" Description="Leave default when using the Appdata mapping above." Type="Variable" Display="advanced-hide" Required="true" Mask="false">file:/data/forum.db</Config>
+  <Config Name="SKIP_DB_MIGRATE" Target="SKIP_DB_MIGRATE" Default="" Mode="" Description="Set to 1 only to debug start failures (skips migrations — not for production)." Type="Variable" Display="advanced" Required="false" Mask="false"/>
   <Config Name="AUTH_SECRET" Target="AUTH_SECRET" Default="" Mode="" Description="Required. Generate: openssl rand -base64 32" Type="Variable" Display="always" Required="true" Mask="true"/>
   <Config Name="NEXTAUTH_URL" Target="NEXTAUTH_URL" Default="http://REPLACE_WITH_YOUR_SERVER_IP:3000" Mode="" Description="Must match the URL users use in the browser (use https://your.domain if behind Swag/NPM)." Type="Variable" Display="always" Required="true" Mask="false">http://REPLACE_WITH_YOUR_SERVER_IP:3000</Config>
   <Config Name="STRIPE_SECRET_KEY" Target="STRIPE_SECRET_KEY" Default="" Mode="" Description="Optional. Leave completely empty if not using Stripe." Type="Variable" Display="always" Required="false" Mask="true"/>
