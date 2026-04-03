@@ -114,6 +114,22 @@ Uses the bundled **prisma-migrate** install (no `npx` / network).
 
 Set **NEXTAUTH_URL** to your real public URL if you use **Swag** / **Nginx Proxy Manager**.
 
+## Web UI is blank / nothing shows
+
+1. **URL and port** — Open `http://UNRAID_IP:3000` (use your **mapped host port** if you changed it from 3000).
+
+2. **Unraid “WebUI” link** — It only matches if the **container port 3000** is published to that same port on the host.
+
+3. **Reverse proxy** — If you use a domain, confirm the proxy **target** is `http://UNRAID_IP:3000` (or the container IP) and returns **200** for `/`.
+
+4. **Quick check** (SSH on Unraid):
+   ```bash
+   curl -sI http://127.0.0.1:3000/
+   ```
+   Expect `HTTP/1.1 200`. **Connection refused** → container not listening; check `docker ps` and `docker logs Hive-Tech-Forum`.
+
+5. **Hard refresh** the browser (`Ctrl+Shift+R`).
+
 ## Community Applications (public store)
 
 To publish in the official CA feed, follow the [Unraid template submission process](https://forums.unraid.net/topic/101424-how-to-publish-docker-templates-to-community-applications-on-unraid/). This XML works as a **user template** without that step.

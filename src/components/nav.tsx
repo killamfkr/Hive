@@ -1,19 +1,11 @@
 import Link from "next/link";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
 import { SignOutButton } from "@/components/sign-out-link";
 import { BrandLogo } from "@/components/brand-logo";
 
 export async function Nav() {
   const session = await auth();
-  let tier: string | null = null;
-  if (session?.user?.id) {
-    const u = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { membershipTier: true },
-    });
-    tier = u?.membershipTier ?? null;
-  }
+  const tier = session?.user?.membershipTier ?? null;
 
   return (
     <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">

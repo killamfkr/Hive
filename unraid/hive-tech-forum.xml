@@ -25,6 +25,7 @@
     Seed categories once: docker exec -it Hive-Tech-Forum sh -c 'cd /app/prisma-migrate &amp;&amp; node node_modules/prisma/build/index.js db seed'&#xD;
     Stripe webhook: https://your-domain/api/webhooks/stripe&#xD;
     &#xD;
+    Web UI blank? Use http://YOUR_SERVER_IP:3000 (match your mapped port). Unraid WebUI button only works if host port is correct. See unraid/README.md.&#xD;
     Note: This template intentionally has NO TemplateURL so Unraid does not overwrite your settings when you click Apply. Update the image with Docker pull or recreate the container when the image is updated.
   </Overview>
   <Category>Cloud: Productivity</Category>

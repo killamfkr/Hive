@@ -111,6 +111,8 @@ If the container **restarts in a loop**, open **Logs** (Docker tab → click con
 
 If Unraid shows **Execution error** and the container **never starts** (no logs), the failure is usually **before** the app runs — often **GHCR pull** or a **bad Registry + Repository** combo. **SSH**: `docker pull ghcr.io/killamfkr/hive:latest` and see [`unraid/README.md`](unraid/README.md) (foreground `docker run`, `SKIP_DB_MIGRATE`).
 
+**Blank browser page** but the container runs: try `http://UNRAID_IP:3000` (correct port), `curl -sI http://127.0.0.1:3000/` on the server, and proxy target if using a domain — see [Web UI section in `unraid/README.md`](unraid/README.md).
+
 ## Environment variables
 
 See `.env.example` for `DATABASE_URL`, `AUTH_SECRET`, Stripe keys, price ID, webhook secret, and XUI base URL / API key / bouquet IDs.
